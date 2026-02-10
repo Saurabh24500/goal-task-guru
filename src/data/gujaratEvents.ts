@@ -1,7 +1,10 @@
 export interface Event {
+  id?: string;
   date: string;
   name: string;
-  type: 'festival' | 'national' | 'regional';
+  type?: 'festival' | 'national' | 'regional' | 'user';
+  description?: string;
+  color?: string; // optional hex or css color name for user events
 }
 
 export const gujaratEvents2025: Event[] = [
@@ -66,7 +69,8 @@ export const getEventsForDate = (date: Date): Event[] => {
   const dateStr = date.toISOString().split('T')[0];
   const year = date.getFullYear();
   const events = year === 2025 ? gujaratEvents2025 : gujaratEvents2026;
-  return events.filter(e => e.date === dateStr);
+  const user = getUserEvents().filter(e => e.date === dateStr);
+  return [...events.filter(e => e.date === dateStr), ...user];
 };
 
 export const getUpcomingEvents = (count: number = 5): Event[] => {
@@ -74,14 +78,37 @@ export const getUpcomingEvents = (count: number = 5): Event[] => {
   const todayStr = today.toISOString().split('T')[0];
   const year = today.getFullYear();
   const events = year === 2025 ? gujaratEvents2025 : gujaratEvents2026;
-  
-  return events
-    .filter(e => e.date >= todayStr)
-    .slice(0, count);
+  const user = getUserEvents().filter(e => e.date >= todayStr);
+  const merged = [...events.filter(e => e.date >= todayStr), ...user];
+  merged.sort((a, b) => a.date.localeCompare(b.date));
+  return merged.slice(0, count);
 };
 
 export const getAllEvents = (): Event[] => {
   const today = new Date();
   const year = today.getFullYear();
-  return year === 2025 ? gujaratEvents2025 : gujaratEvents2026;
+  const base = year === 2025 ? gujaratEvents2025 : gujaratEvents2026;
+  return [...base, ...getUserEvents()];
+};
+
+const USER_EVENTS_KEY = 'user_calendar_events_v1';
+
+export const getUserEvents = (): Event[] => {
+  try {
+    const raw = localStorage.getItem(USER_EVENTS_KEY);
+    return raw ? JSON.parse(raw) as Event[] : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+export const addUserEvent = (ev: Event) => {
+  const list = getUserEvents();
+  const toAdd = { ...ev, id: ev.id || Date.now().toString() };
+  const next = [...list, toAdd];
+  localStorage.setItem(USER_EVENTS_KEY, JSON.stringify(next));
+};
+
+export const clearUserEvents = () => {
+  localStorage.removeItem(USER_EVENTS_KEY);
 };

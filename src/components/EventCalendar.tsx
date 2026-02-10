@@ -1,18 +1,58 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
-import { getAllEvents, getEventsForDate, getUpcomingEvents, Event } from '@/data/gujaratEvents';
+import { getAllEvents, getEventsForDate, getUpcomingEvents, Event, addUserEvent } from '@/data/gujaratEvents';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const EventCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   
-  const allEvents = getAllEvents();
+  const [allEvents, setAllEvents] = useState<Event[]>(() => getAllEvents());
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    setAllEvents(getAllEvents());
+  }, [refreshKey]);
+
   const upcomingEvents = getUpcomingEvents(5);
   const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : [];
 
   // Get dates that have events
   const eventDates = allEvents.map(e => new Date(e.date));
+
+  // Build modifiers per color (for user events) so days can be styled by chosen color
+  const colorMap = new Map<string, Date[]>();
+  allEvents.forEach(ev => {
+    if (ev.color) {
+      const key = `c_${ev.color.replace('#', '')}`;
+      const arr = colorMap.get(key) || [];
+      arr.push(new Date(ev.date));
+      colorMap.set(key, arr);
+    }
+  });
+
+  const modifiers: any = { hasEvent: eventDates };
+  const modifiersStyles: any = {
+    hasEvent: {
+      fontWeight: 'bold',
+      textDecoration: 'underline',
+      textDecorationColor: 'hsl(var(--primary))',
+      textUnderlineOffset: '4px',
+    }
+  };
+
+  // Add color-based modifiers/styles
+  colorMap.forEach((dates, key) => {
+    modifiers[key] = dates;
+    const colorHex = `#${key.slice(2)}`;
+    modifiersStyles[key] = {
+      background: `${colorHex}20`,
+      border: `1px solid ${colorHex}30`,
+      color: colorHex,
+    };
+  });
 
   const getEventTypeColor = (type: Event['type']) => {
     switch (type) {
@@ -52,17 +92,8 @@ const EventCalendar = () => {
             month={currentMonth}
             onMonthChange={setCurrentMonth}
             className="rounded-lg border border-border p-3"
-            modifiers={{
-              hasEvent: eventDates,
-            }}
-            modifiersStyles={{
-              hasEvent: {
-                fontWeight: 'bold',
-                textDecoration: 'underline',
-                textDecorationColor: 'hsl(var(--primary))',
-                textUnderlineOffset: '4px',
-              }
-            }}
+            modifiers={modifiers}
+            modifiersStyles={modifiersStyles}
           />
           
           {/* Selected Date Events */}
@@ -73,13 +104,30 @@ const EventCalendar = () => {
               </h4>
               <div className="space-y-2">
                 {selectedDateEvents.map((event, i) => (
-                  <div key={i} className={`px-3 py-2 rounded-lg border ${getEventTypeColor(event.type)}`}>
-                    <span className="text-sm font-medium">{event.name}</span>
+                  <div key={i} className={`px-3 py-2 rounded-lg border`} style={{ background: event.color ? `${event.color}20` : undefined, borderColor: event.color ? `${event.color}30` : undefined }}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="text-sm font-medium">{event.name}</span>
+                        {event.description && <div className="text-xs text-muted-foreground mt-1">{event.description}</div>}
+                      </div>
+                      <div className="ml-2">
+                        <div className="w-3 h-3 rounded-full" style={{ background: event.color || (event.type === 'festival' ? 'var(--primary)' : event.type === 'national' ? 'var(--secondary)' : 'var(--accent)') }} />
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
+          {/* Add custom event form */}
+          <div className="mt-4 p-4 bg-muted/60 rounded-lg">
+            <h4 className="text-sm font-medium text-foreground mb-2">Add event</h4>
+            <div className="space-y-2">
+              <Input placeholder="Event name" value={''} onChange={() => {}} className="bg-card" aria-label="placeholder" style={{ display: 'none' }} />
+              {/* We'll use controlled fields below */}
+              <EventCreator selectedDate={selectedDate} onAdd={() => setRefreshKey(k => k + 1)} />
+            </div>
+          </div>
         </div>
 
         {/* Upcoming Events */}
@@ -131,3 +179,42 @@ const EventCalendar = () => {
 };
 
 export default EventCalendar;
+
+type EventCreatorProps = {
+  selectedDate?: Date;
+  onAdd?: () => void;
+};
+
+const EventCreator = ({ selectedDate, onAdd }: EventCreatorProps) => {
+  const [name, setName] = useState('');
+  const [date, setDate] = useState<string>(selectedDate ? selectedDate.toISOString().split('T')[0] : '');
+  const [description, setDescription] = useState('');
+  const [color, setColor] = useState('#f97316');
+
+  useEffect(() => {
+    if (selectedDate) setDate(selectedDate.toISOString().split('T')[0]);
+  }, [selectedDate]);
+
+  const handleAdd = () => {
+    if (!name || !date) return;
+    addUserEvent({ date, name, type: 'user', description, color });
+    setName('');
+    setDescription('');
+    setColor('#f97316');
+    onAdd?.();
+  };
+
+  return (
+    <div className="space-y-2">
+      <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <div className="flex gap-2">
+        <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="flex-1" />
+        <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-12 h-10 p-0" />
+      </div>
+      <Input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <div className="flex justify-end">
+        <Button onClick={handleAdd} size="sm">Add</Button>
+      </div>
+    </div>
+  );
+};
