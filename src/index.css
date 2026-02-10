@@ -142,6 +142,44 @@
     background-image: radial-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
   }
+
+  /* Home background blobs and cursor */
+  .home-bg {
+    mix-blend-mode: screen;
+  }
+
+  .cursor-follower {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    border-radius: 9999px;
+    pointer-events: none;
+    transform: translate3d(-50%, -50%, 0);
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.2) 30%, rgba(255,255,255,0.05) 60%, transparent 70%);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    z-index: 9999;
+    transition: transform 0.06s linear;
+  }
+
+  .blob {
+    position: fixed;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    filter: blur(40px) saturate(140%);
+    opacity: 0.75;
+    transform-origin: center;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    will-change: transform;
+  }
+
+  .blob-0 { background: radial-gradient(circle at 30% 30%, #7c3aed, #06b6d4); }
+  .blob-1 { background: radial-gradient(circle at 20% 40%, #f97316, #f43f5e); width:200px; height:200px; }
+  .blob-2 { background: radial-gradient(circle at 40% 20%, #06b6d4, #60a5fa); width:260px; height:260px; }
+  .blob-3 { background: radial-gradient(circle at 50% 60%, #34d399, #60a5fa); width:220px; height:220px; }
+  .blob-4 { background: radial-gradient(circle at 60% 30%, #f472b6, #fb7185); width:180px; height:180px; }
+  .blob-5 { background: radial-gradient(circle at 30% 50%, #f97316, #f59e0b); width:300px; height:300px; }
 }
 
 @layer components {

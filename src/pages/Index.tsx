@@ -5,10 +5,12 @@ import YearProgress from '@/components/YearProgress';
 import TaskList from '@/components/TaskList';
 import GoalsList from '@/components/GoalsList';
 import EventCalendar from '@/components/EventCalendar';
+import HomeBackground from '@/components/HomeBackground';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background pattern-dots">
+    <div className="min-h-screen bg-background">
+      <HomeBackground />
       {/* Header */}
       <header className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
