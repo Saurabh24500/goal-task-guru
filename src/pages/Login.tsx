@@ -8,7 +8,6 @@ import { Mail, Phone, Lock, Sparkles, ArrowRight, AlertCircle } from 'lucide-rea
 import { 
   PasswordStrengthIndicator, 
   validatePasswordStrength, 
-  TwoFactorVerification,
   LoginLockoutNotice 
 } from '@/components/AuthComponents';
 import ThemeToggle from '@/components/ThemeToggle';
