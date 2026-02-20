@@ -448,7 +448,7 @@ const Login = () => {
               <div className="space-y-4">
                 {isRegister && (
                   <div>
-                    <label className="text-xs font-medium text-white mb-1.5 block">Name</label>
+                    <label className="text-xs font-medium text-white mb-1.5 block">Full Name</label>
                     <Input
                       placeholder="John Doe"
                       value={name}
