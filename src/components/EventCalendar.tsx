@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
-import { ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, Sparkles, Plus } from 'lucide-react';
 import { getAllEvents, getEventsForDate, getUpcomingEvents, Event, addUserEvent } from '@/data/gujaratEvents';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 
 const EventCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -119,14 +121,9 @@ const EventCalendar = () => {
               </div>
             </div>
           )}
-          {/* Add custom event form */}
-          <div className="mt-4 p-4 bg-muted/60 rounded-lg">
-            <h4 className="text-sm font-medium text-foreground mb-2">Add event</h4>
-            <div className="space-y-2">
-              <Input placeholder="Event name" value={''} onChange={() => {}} className="bg-card" aria-label="placeholder" style={{ display: 'none' }} />
-              {/* We'll use controlled fields below */}
-              <EventCreator selectedDate={selectedDate} onAdd={() => setRefreshKey(k => k + 1)} />
-            </div>
+          {/* Add custom event button */}
+          <div className="mt-4">
+            <EventCreatorDialog selectedDate={selectedDate} onAdd={() => setRefreshKey(k => k + 1)} />
           </div>
         </div>
 
@@ -179,6 +176,101 @@ const EventCalendar = () => {
 };
 
 export default EventCalendar;
+
+type EventCreatorDialogProps = {
+  selectedDate?: Date;
+  onAdd?: () => void;
+};
+
+const EventCreatorDialog = ({ selectedDate, onAdd }: EventCreatorDialogProps) => {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [date, setDate] = useState<string>(selectedDate ? selectedDate.toISOString().split('T')[0] : '');
+  const [description, setDescription] = useState('');
+  const [color, setColor] = useState('#f97316');
+
+  useEffect(() => {
+    if (selectedDate) setDate(selectedDate.toISOString().split('T')[0]);
+  }, [selectedDate]);
+
+  const handleAdd = () => {
+    if (!name || !date) {
+      alert('Please fill in event name and date');
+      return;
+    }
+    addUserEvent({ date, name, type: 'user', description, color });
+    setName('');
+    setDescription('');
+    setColor('#f97316');
+    setOpen(false);
+    onAdd?.();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="w-full" variant="outline">
+          <Plus className="w-4 h-4 mr-2" />
+          Add Event
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Create New Event</DialogTitle>
+          <DialogDescription>
+            Add a custom event to your calendar with a description
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium mb-1 block">Event Name *</label>
+            <Input 
+              placeholder="e.g., Birthday, Anniversary, Meeting" 
+              value={name} 
+              onChange={(e) => setName(e.target.value)}
+              className="bg-background"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Date *</label>
+            <Input 
+              type="date" 
+              value={date} 
+              onChange={(e) => setDate(e.target.value)}
+              className="bg-background"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Description</label>
+            <Textarea 
+              placeholder="Add details about this event..." 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)}
+              className="bg-background resize-none"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block">Event Color</label>
+            <div className="flex items-center gap-3">
+              <input 
+                type="color" 
+                value={color} 
+                onChange={(e) => setColor(e.target.value)} 
+                className="w-12 h-10 rounded cursor-pointer border border-border"
+              />
+              <span className="text-sm text-muted-foreground">{color}</span>
+            </div>
+          </div>
+          <div className="flex gap-2 justify-end pt-4">
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={handleAdd}>Create Event</Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 type EventCreatorProps = {
   selectedDate?: Date;
