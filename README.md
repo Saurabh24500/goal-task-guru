@@ -2,7 +2,7 @@
 
 ## Project info
 
-Working URL: https://to-do-list-58c39.web.app/
+Working URL:
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
