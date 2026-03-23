@@ -2,6 +2,8 @@
 
 ## Project info
 
+Working URL: https://to-do-list-58c39.web.app/
+
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
 ## How can I edit this code?
