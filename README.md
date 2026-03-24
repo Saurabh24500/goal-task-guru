@@ -6,6 +6,8 @@ Working URL:
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
+I made this website to arrange my task and complete it time to time with deadline.
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
