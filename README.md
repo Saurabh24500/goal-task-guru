@@ -6,7 +6,8 @@ Working URL:
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
-I made this website to arrange my task and complete it time to time with deadline.
+I made this website to arrange my task and complete it time to time with deadline.It is good one which i use daily.
+
 
 ## How can I edit this code?
 
