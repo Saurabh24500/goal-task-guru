@@ -2,7 +2,7 @@
 
 ## Project info
 
-Working URL:Still Under Maintanance.
+Working URL: !! Still Under Maintanance.
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
