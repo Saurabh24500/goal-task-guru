@@ -1,4 +1,4 @@
-🚀 TaskFlow Manager
+# 🚀 TaskFlow Manager
 
 Organize Tasks • Track Deadlines • Stay Productive
 
@@ -8,7 +8,7 @@ Designed for students, developers, and anyone who wants a clean task management 
 
 
 
----
+-----
 
 🌐 Live Project
 
