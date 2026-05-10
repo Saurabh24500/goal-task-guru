@@ -168,10 +168,10 @@ https://docs.lovable.dev/features/custom-domain#custom-domain
 
 Contributions are always welcome!
 
-# Fork the repo
-# Create a new branch
-# Commit your changes
-# Push and create PR
+* Fork the repo
+* Create a new branch
+* Commit your changes
+* Push and create PR
 
 
 ---
