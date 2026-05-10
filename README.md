@@ -46,8 +46,9 @@ https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 🧩 shadcn/ui	UI Components
 
 
-</div>
----
+</div
+
+-----
 
 📂 Project Setup
 
