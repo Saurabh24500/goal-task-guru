@@ -35,7 +35,7 @@ https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
 ---
 
-🛠️ Tech Stack
+🛠️ Tech Stack...
 
 <div align="center">Technology	Purpose
 
