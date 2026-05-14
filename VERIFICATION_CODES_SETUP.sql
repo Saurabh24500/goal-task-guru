@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS verification_codes (
 );
 
 -- Create index for faster lookups
-CREATE INDEX IF NOT EXISTS.. idx_verification_codes_email_type 
+CREATE INDEX IF NOT EXISTS idx_verification_codes_email_type 
 ON verification_codes(email, type);
 
 CREATE INDEX IF NOT EXISTS idx_verification_codes_expires_at 
